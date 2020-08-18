@@ -22,20 +22,43 @@
     <div class="container">
         <form class="col-md-6 m-auto py-5">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <input type="text" id="searchInput" class="form-control" placeholder="Enter a location for Weather ...">
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-danger">Search</button>
+                    <button id="searchBtn" type="button" class="btn btn-danger">Search</button>
                 </div>
             </div>
         </form>
         <div class="weather-status text-white text-center">
             <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
-            <h1>Dhaka</h1>
-            <h3><span>38.06</span>&deg;C</h3>
-            <h1 class="lead">Clouds</h1>
+            <h1 id="cityName">City Name</h1>
+            <h3 id="temperature"><span id="degree">38.06</span>&deg;C</h3>
+            <h1 id="condition" class="lead">Clouds</h1>
         </div>
     </div>
 
+    <script>
+        const apiKey = "1c8c702fc0a3b7698bdb6d43532d76b3";
+        const searchInput = document.getElementById("searchInput");
+        const searchBtn = document.getElementById("searchBtn");
+        searchBtn.addEventListener("click",function(){
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${searchInput.value}&units=metric&APPID=1c8c702fc0a3b7698bdb6d43532d76b3`)
+            .then(weather => {
+                return weather.json();
+            }).then(displayResults);
+        })
+        function displayResults(weather) {
+            if(weather.cod != 200){
+                document.getElementById("cityName").innerText = weather.message;
+                document.getElementById("temperature").style.display = "none";
+                document.getElementById("condition").style.display = "none";
+            }else{
+                console.log(weather);
+                document.getElementById("cityName").innerText = weather.name;
+                document.getElementById("degree").innerText = weather.main.temp;
+                document.getElementById("condition").innerText = weather.weather[0].main;
+            }
+        }
+    </script>
 </body>
 
 </html>
